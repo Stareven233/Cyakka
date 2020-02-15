@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}{{ current_user.username }}- 更改头像 - Cyakka{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="../../static/css/main.css">
+{% endblock %}
+
+{% block content %}
+    <div class="content-box">
+        <h1>Upload-avatar</h1>
+        <div class="avatar-form">
+            <form method="post" class="form" enctype="multipart/form-data" role="form">
+                <label class="avatar-label">
+                    <input id="avatar" name="avatar" required="" type="file">
+                    <span class="glyphicon glyphicon-picture"></span>
+                    <span>选择图片</span>
+                </label>
+
+                <div class="border-line"></div>
+
+                <div class="avatar-now">
+                    {% if not current_user.avatar %}
+                        <img src="../../static/avatars/default.jpg" class="img-circle" alt="avatar">
+                    {% else %}
+                        <img src="../../static/avatars/{{current_user.avatar}}" class="img-circle" alt="avatar">
+                    {% endif %}
+                    <div class="pre-info">当前头像</div>
+                </div>
+                <div style="clear: both"></div>
+
+                <p class="avatar-desc">请选择图片上传：大小180 * 180像素支持JPG、PNG等格式，图片需小于2M</p>
+
+                <div class="submit-btn">
+                    <input class="btn btn-default" id="submit" name="submit" type="submit" value="更新">
+                </div>
+            </form>
+        </div>
+    </div>
+    {{ super() }}
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script type="text/javascript" src="../../static/js/main.js"></script>
+{% endblock scripts %}
+

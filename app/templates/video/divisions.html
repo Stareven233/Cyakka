@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block title %}{{ v_types[v_type][1] }} - Cyakka{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="../../static/css/video.css">
+{% endblock %}
+
+{% block nav_menu %}
+    {{ super() }}
+    <div class="navbar-collapse collapse primary-menu">
+        <ul class="nav nav-tabs">
+            {% for key, value in v_types.items() %}
+                <li><a href="{{ url_for('video.classify', v_type=key) }}">{{ value[1] }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="video-box">
+
+        {% include "_videolist.html" %}
+
+        <div class="pagination">
+            {{ macros.pagination_widget(pagination, 'video.classify', {"v_type": v_type}) }}
+        </div>
+    </div>
+    {{ super() }}
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script type="text/javascript" src="../../static/js/video.js"></script>
+{% endblock scripts %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}后台管理 - Cyakka{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="../../static/css/main.css">
+{% endblock %}
+
+{% block content %}
+    <div id="back-nav" class="btn-group-vertical">
+        <a class="btn" href="{{ url_for('main.audit_video') }}">稿件审核</a>
+        <a class="btn" href="{{ url_for('main.audit_comment') }}">评论管理</a> {# <处理被举报的评论...>#}
+        {% if current_user.is_administrator() %}
+            <a class="btn" href="{{ url_for('main.audit_user') }}">用户管理</a> {# <分页列出所有用户...>#}
+            <a class="btn" href="{{ url_for('main.log_user') }}">用户日志</a>
+            <a class="btn" href="{{ url_for('main.log_admin', op='login') }}">管理日志</a>
+            {# 用户意见 管理团队#}
+        {% endif %}
+    </div>
+    {{ super() }}
+{% endblock %}
+
+
+{% block scripts %}
+    {{ super() }}
+    <script type="text/javascript" src="../../static/js/main.js"></script>
+{% endblock scripts %}

@@ -1,0 +1,48 @@
+{% extends "main/backstage.html" %}
+{% import "_macros.html" as macros %}
+
+{% block content %}
+    {{ super() }}
+    <div id="back-body" class="back-box">
+        <table class="table">
+        <tr>
+            <th class="col-md-2">UID</th>
+            <th class="col-md-1">头像</th>
+            <th class="col-md-7">用户名</th>
+            <th class="col-md-1">编辑</th>
+            <th class="col-md-1">权限</th>
+        </tr>
+        {% for user in users %}
+        <tr class="user-info">
+            <td class="col-md-2">{{ user.id }}</td>
+            <td class="col-md-1"><a href="{{ url_for('main.user_space', uid=user.id) }}">
+                {% if not user.avatar %}
+                    <img src="../../static/avatars/default.jpg" class="img-circle" alt="{{ user.nickname }}">
+                {% else %}
+                    <img src="../../static/avatars/{{ user.avatar }}" class="img-circle" alt="{{ user.nickname }}">
+                {% endif %}
+            </a></td>
+            <td class="col-md-7"><a href="{{ url_for('main.user_space', uid=user.id) }}" target="_blank">
+                {{ user.username }}
+            </a></td>
+            <td class="col-md-1">
+                <a href="{{ url_for('main.edit_profile_admin', uid=user.id) }}"  target="_blank"><span class="glyphicon glyphicon-edit"></span></a>
+            </td>
+            <td class="col-md-1 u-perm-{{ user.permissions }}">
+                {% if user.can(Permission.ADMIN) %} <span class="label label-danger">管理</span>
+                {% elif user.can(Permission.AUDIT) %} <span class="label label-warning">审核</span>
+                {% elif user.can(Permission.VIP) %} <span class="label label-primary">大会员</span>
+                {% elif not user.permissions %} <span class="label label-default">封禁中</span>
+                {% elif user.can(Permission.LOGIN) and user.can(Permission.COMMENT) %} <span class="label label-info">会员</span>
+                {% elif not user.can(Permission.COMMENT) %} <span class="label label-success">禁言中</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        </table>
+
+        <div class="pagination">
+            {{ macros.pagination_widget(pagination, 'main.audit_user') }}
+        </div>
+    </div>
+{% endblock %}

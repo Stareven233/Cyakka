@@ -1,0 +1,31 @@
+{% macro v_trunc(info) %}
+    {{ info if info<=10000 else (info//1000/10)|string|truncate(length=5, end="", leeway=0) +'万' }}
+{% endmacro %}
+
+{% macro video_status(status) %}
+    {% if status==0 %}待审核{% elif status==1 %}通过{% elif status==2 %}违规{% endif %}
+{% endmacro %}
+
+{% macro pagination_widget(pagination, endpoint, path={"":""}) %}
+{% if pagination.pages > 1 %}
+    <ul class="pagination">
+    {% if pagination.has_prev %}
+        <li><a href="{{ url_for(endpoint, page=pagination.page - 1, **path) }}">&laquo;</a></li>
+    {% endif %}
+
+    {% for p in pagination.iter_pages() %}
+        {% if p %}
+            <li {% if p == pagination.page %}class="active"{% endif %}>
+                <a href="{{ url_for(endpoint, page=p, **path) }}">{{ p }}</a>
+            </li>
+        {% else %}
+            <li><a href="">&hellip;</a></li>
+        {% endif %}
+    {% endfor %}
+
+    {% if pagination.has_next %}
+        <li><a href="{{ url_for(endpoint, page=pagination.page + 1, **path) }}">&raquo;</a></li>
+    {% endif %}
+</ul>
+{% endif %}
+{% endmacro %}

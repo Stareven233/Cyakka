@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+
+{% block title %}Cyakka{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="../static/css/index.css">
+{% endblock %}
+
+{% block nav_menu %}
+    <div class="blur-bg"></div>  {# 窗口缩放会与主图失去同步，错位 #}
+    {{ super() }}
+    <div class="navbar-collapse collapse primary-menu">
+
+        <ul class="nav nav-tabs">
+            {% for key, value in v_types.items() %}
+                <li><a href="{{ url_for('video.classify', v_type=key) }}">{{ value[1] }}</a></li>
+            {% endfor %}
+        </ul>
+
+        <div class="search-box">
+            <input id="search-input" name="keyword" type="text" autocomplete="off" maxlength="50">
+            <span class="glyphicon glyphicon-search"></span>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div id="c-wrapper">
+        {% for key, value in v_types.items() %}
+        <div class="wrap-module" id="cya_{{ key }}">
+
+            <header>
+                <a href="{{ url_for('video.classify', v_type=key) }}" class="type">{{ value[1] }}</a>
+                <a href="{{ url_for('video.classify', v_type=key) }}" class="link-more" target="_blank">更多</a>
+                <span class="read-push" data-div="{{ key }}">换一换</span>
+            </header>
+
+            <div class="storey-box">
+                {% for v in v_divs[key] %}
+                <div class="spread-module">
+                    <a href="{{ url_for('video.play', av=v.id) }} " target="_blank">
+                        <div class="lazy-img"><img src="../../static/video_faces/{{ v.face }}" alt="{{ v.title }}"/></div>
+                        <p class="title">{{ v.title }}</p>
+                    </a>
+
+                    <p class="info">
+                        <span class="like"><span class="glyphicon glyphicon-thumbs-up"></span> {{ macros.v_trunc(v.like) }}</span>
+                        <span class="collect"><span class="glyphicon glyphicon-star-empty"></span> {{ macros.v_trunc(v.collect) }}</span>
+                    </p>
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+        {% endfor %}
+    </div>
+
+    {{ super() }}
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script type="text/javascript" src="../static/js/index.js"></script>
+{% endblock scripts %}

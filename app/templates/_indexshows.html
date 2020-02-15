@@ -1,0 +1,14 @@
+{% import "_macros.html" as macros %}
+
+{% for v in v_divs %}
+<div class="spread-module">
+    <a href="{{ url_for('video.play', av=v.id) }} " target="_blank">
+        <div class="lazy-img"><img src="../../static/video_faces/{{ v.face }}" alt="{{ v.title }}"/></div>
+        <p class="title">{{ v.title }}</p>
+    </a>
+    <p class="info">
+        <span class="like"><span class="glyphicon glyphicon-thumbs-up"></span> {{ macros.v_trunc(v.like) }}</span>
+        <span class="collect"><span class="glyphicon glyphicon-star-empty"></span> {{ macros.v_trunc(v.collect) }}</span>
+    </p>
+</div>
+{% endfor %}

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block title %}{{ video.title }} - Cyakka{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <link href="../../static/css/DPlayer.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../../static/css/video.css">
+{% endblock %}
+
+{% block content %}
+<div class="container left-con">
+    <div id="view-box">
+        <h4>{{ video.title }}</h4>
+        <div class="v-info">
+            <a class="first" href="{{ url_for('video.classify', v_type=v_type) }}">{{ v_type }}</a>
+            <span>{{ video.date }}</span>
+        </div>
+        <div class="v-info">
+            <span class="first">播放数</span><span>弹幕数</span>
+        </div>
+    </div>
+
+    <div id="player-wrap">
+        <div id="dplayer" data-file="{{ video.file }}" data-face="{{ video.face }}"
+         data-id="{{ video.id }}" data-user="{{ current_user.username }}"></div>
+    </div>
+
+    <div id="v-toolbar">
+        <div class="ops">
+            <span title="点赞数" class="like">
+                <span class="glyphicon glyphicon-thumbs-up"></span>
+                <span class="statistic">{{ macros.v_trunc(video.like) }}</span>
+            </span>
+            <span title="硬币数" class="coin">
+                <span class="glyphicon glyphicon-copyright-mark"></span>
+                <span class="statistic">{{ macros.v_trunc(video.coin) }}</span>
+            </span>
+            <span title="收藏数" class="collect">
+                <span class="glyphicon glyphicon-star"></span>
+                <span class="statistic">{{ macros.v_trunc(video.collect) }}</span>
+            </span>
+        </div>
+    </div>
+
+    <div id="v-desc">
+        <div class="desc">{{ video.desc }}</div>
+        <div class="btn-more">展开更多</div>
+    </div>
+
+    {% include "video/_comment.html" %}
+{#    但不会对.comment有get请求，因此comments不能在.comment提交#}
+</div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script src="../../static/js/DPlayer.min.js"></script>
+{#    <script src="../../static/js/md5.min.js"></script>#} <!-- 使用外部弹幕接口才需要 -->
+    <script src="../../static/js/video.js" defer></script>
+{% endblock scripts %}

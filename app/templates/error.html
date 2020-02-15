@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}错误 - {{ error_code }} - Cyakka{% endblock %}
+
+
+{#{% block scripts %}#}
+{#    {{ super() }}#}
+{#    <script>#}
+{#        let head = document.querySelector('head');#}
+{#        let base_css = document.createElement('link');#}
+{#        let bootstrap_css = document.createElement('link');#}
+{#        let base_attr = {#}
+{#            href: `${new URL(document.URL).origin}/static/`,#}
+{#            rel: "stylesheet",#}
+{#            type: "text/css",#}
+{#        };#}
+{#        base_css.href = base_attr.href + "css/base.css";#}
+{#        base_css.rel = base_attr.rel;#}
+{#        bootstrap_css.href = base_attr.href + "css/bootstrap.css";#}
+{#        bootstrap_css.rel = base_attr.rel;#}
+{#        let css = `{#<link rel="stylesheet" type="text/css" href="${new URL(document.URL).origin}/static/css/base.css">#}`;#}
+{#        head.append(base_css, bootstrap_css);#}
+{#    </script>#}
+{#{% endblock scripts %}#}

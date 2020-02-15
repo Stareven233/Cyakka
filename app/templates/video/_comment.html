@@ -1,0 +1,51 @@
+{% import "_macros.html" as macros %}
+
+<div id="v-comment">
+    <h4>{{ video.comments.count() }}  评论</h4>
+    <div class="comm-send">
+        <div class="user-face">
+            {% if current_user.is_authenticated and current_user.avatar %}
+                <img class="img-circle" src="../../static/avatars/{{ current_user.avatar }}" >
+            {% else %}
+                <img class="img-circle" src="../../static/avatars/noface.gif" >
+            {% endif %}
+        </div>
+        <button type="submit" class="comm-submit" {% if not current_user.is_authenticated %}disabled{% endif %}>发表评论</button>
+        {% if current_user.is_authenticated %}
+            <textarea class="comm-input" maxlength="150" cols="80" rows="5" placeholder="请自觉遵守互联网相关的政策法规，严禁发布色情、暴力、反动的言论。" ></textarea>
+        {% else %}
+            <div class="comm-input" style="text-align: center; vertical-align: center">
+                请先<a href="{{ url_for('auth.login') }}">登录</a>后发表评论(・ω・)
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="comm-list">
+        {% for comm in comments %}
+            <div class="comm-item" data-cid="{{ comm.id }}">
+                <div class="user-face"><a href="{{ url_for('main.user_space', uid=comm.author_id)}}">
+                    {% if comm.author.avatar %}
+                        <img class="img-circle" src="../../static/avatars/{{ comm.author.avatar }}">
+                    {% else %}
+                        <img class="img-circle" src="../../static/avatars/default.jpg">
+                    {% endif %}
+                </a></div>
+                <div class="con">
+                    <a class="user-info" href="{{ url_for('main.user_space', uid=comm.author_id)}}" target="_blank">{{ comm.author.nickname }}</a>
+                    <p class="text">{{ comm.body }}</p>
+                    <div class="info">
+                        <span class="time">{{ comm.date }}</span>
+                        <span class="tip-off">举报</span>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        {% if not comments %}
+            <div class="no-comm">看看下面~来发评论吧</div>
+        {% endif %}
+    </div>
+
+    <div class="pagination">
+        {{ macros.pagination_widget(pagination, 'video.play',  {"av":video.id}) }}
+    </div>
+</div>

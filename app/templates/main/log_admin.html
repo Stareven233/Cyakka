@@ -1,0 +1,72 @@
+{% extends "main/backstage.html" %}
+{% import "_macros.html" as macros %}
+
+{% block title %}管理日志 - Cyakka{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="../../static/css/main.css">
+{% endblock %}
+
+{% block content %}
+    <div id="log-body" class="back-box">
+        <form class="log-form">
+            <nav class="search-nav">
+                <ul class="filter-type" id="op">
+                    <li><input id="op-0" name="op" type="radio" value="login">
+                        <label for="op-0">登录记录</label>
+                    </li>
+                    <li><input id="op-1" name="op" type="radio" value="register">
+                        <label for="op-1">用户注册</label>
+                    </li>
+                    <li><input id="op-2" name="op" type="radio" value="edit">
+                        <label for="op-2">编辑用户</label>
+                    </li>
+                    <li><input id="op-3" name="op" type="radio" value="audit">
+                        <label for="op-3">审核稿件</label>
+                    </li>
+                </ul>
+            </nav>
+        </form>
+
+        <table class="table">
+        <tr>
+            <th class="col-md-2">时间</th>
+            <th class="col-md-2">UID</th>
+            <th class="col-md-3">详细信息</th>
+        </tr>
+
+        {% for log in logs %}
+        <tr class="user-info">
+            {% if log.uid %} {# log 登录/修改 #}
+                <td class="col-md-2">{{ log.date }}</td>
+                <td class="col-md-2"><a href="{{ url_for('main.user_space', uid=log.uid) }}" target="_blank">{{ log.uid }}</a></td>
+                <td class="col-md-3">{{ log.detail }}</td>
+
+            {% elif log.inspector %} {# video 审核 #}
+                <td class="col-md-2">{{ log.date }}</td>
+                <td class="col-md-2"><a href="{{ url_for('main.user_space', uid=log.inspector) }}" target="_blank">{{ log.inspector }}</a></td>
+                <td class="col-md-3"><a href="{{ url_for('video.play', av=log.id) }}" target="_blank">av{{ log.id }}</a>{{ macros.video_status(log.status) }}</td>
+
+            {% else %} {# user 创建 #}
+                <td class="col-md-2">{{ log.member_since }}</td>
+                <td class="col-md-2"><a href="{{ url_for('main.user_space', uid=log.id) }}" target="_blank">{{ log.id }}</a></td>
+                <td class="col-md-3">{{ log.username }}</td>
+            {% endif %}
+        {% endfor %}
+        </tr>
+        </table>
+
+        {% if pagination %}
+            <div class="pagination">
+                {{ macros.pagination_widget(pagination, 'main.log_admin', {"op": op}) }}
+            </div>
+        {% endif %}
+    </div>
+
+    {{ super() }}
+{% endblock %}
+
+{#{% block scripts %}#}
+{#    {{ super() }}#}
+{#{% endblock scripts %}#}

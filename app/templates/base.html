@@ -1,0 +1,83 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}Cyakka{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.css') }}">
+{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+{% endblock %}
+
+{% block navbar %}
+<header class="navbar" id="c-header">
+{#    {% block nav_img %}#}
+{#        <div class="header-img">#}
+        {% block nav_menu %}
+            <div class="navbar-collapse collapse nav-menu">
+            <ul class="nav navbar-nav">
+                <li><a href="{{ url_for('main.index') }}">主页</a></li>
+                {% if current_user.can(Permission.AUDIT) or current_user.is_administrator() %}
+                    <li><a href="{{ url_for('main.audit_video') }}">后台</a></li>
+                {% endif %}
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+            {% if current_user.is_authenticated %}
+                <li><a href="{{ url_for('main.user_space', uid=current_user.id) }}" id="c-avatar">
+                    {% if not current_user.avatar %}
+                        <img src="../static/avatars/default.jpg" class="img-circle" alt="face">
+                    {% else %}
+                        <img src="../static/avatars/{{current_user.avatar}}" class="img-circle" alt="face">
+                    {% endif %}
+                </a></li>
+
+                <li><a id="popover-vip" data-vip="{{ current_user.can(Permission.VIP) }}">大会员</a></li>
+                <li><a href="{{ url_for('auth.logout') }}">登出</a></li>
+                <li><a href="{{ url_for('video.upload') }}">投稿</a></li>
+
+            {% else %}
+                <li><a href="{{ url_for('auth.login') }}" id="c-avatar">
+                    <img src="{{ url_for('static', filename='avatars/default.jpg') }}" class="img-circle" alt="face">
+                    <span>登录</span>
+                </a></li>
+                <li><a href="{{ url_for('auth.register') }}">注册</a></li>
+
+            {% endif %}
+            </ul>
+
+            <!--用js附到头像处的工具栏-->
+            {% if current_user.is_authenticated %}
+                <div id="tooltip" style="display: none">
+                    <div class="nickname ">{{current_user.nickname}}</div>
+                    <div><a href="{{ url_for('main.edit_avatar') }}" class="btn btn-default">更换头像</a></div>
+                    <div><a href="{{ url_for('main.edit_password') }}" class="btn btn-default">更改密码</a></div>
+                    <div><a href="{{ url_for('main.edit_profile') }}" class="btn btn-default">更改信息</a></div>
+                    <div><a href="{{ url_for('video.manage') }}" class="btn btn-default">我的投稿</a></div>
+                </div>
+            {% endif %}
+        </div>
+        {% endblock %}
+{#        </div>#}
+{#    {% endblock %}#}
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="info-message">
+    {% for message in get_flashed_messages() %}
+        <div class="alert">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/base.js') }}"></script>
+{% endblock scripts %}

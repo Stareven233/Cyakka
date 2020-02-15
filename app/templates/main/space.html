@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block title %}{{ user.username }}的个人空间 - Cyakka{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="../../static/css/main.css">
+{% endblock %}
+
+{% block content %}
+    <div class="user-box">
+        <header>
+            <div class="u-avatar">
+                <a href="{{ url_for('main.edit_avatar') }}" target="_blank">更换头像</a>
+                {% if not user.avatar %}
+                    <img src="../../static/avatars/default.jpg" class="img-circle" alt="avatar">
+                {% else %}
+                    <img src="../../static/avatars/{{user.avatar}}" class="img-circle" alt="avatar">
+                {% endif %}
+            </div>
+
+            <div class="u-basic">
+                <p class="u-name">{{ user.nickname }}</p>
+                {% if current_user.is_administrator %}
+                    <a href="mailto:{{ user.email }}" class="u-mail">{{ user.email }}</a>
+                {% endif %}
+                <div style="clear: both"></div>
+                <p class="u-sign">{{ user.about_me }}</p>
+            </div>
+
+            <div class="u-edit">
+                {% if current_user == user %}
+                <a class="btn btn-default" href="{{ url_for('main.edit_profile') }}">编辑</a>
+                {% endif %}
+                {% if current_user.is_administrator %}
+                    <a class="btn btn-danger" href="{{ url_for('main.edit_profile_admin', uid=user.id) }}">编辑[Admin]</a>
+                {% endif %}
+            </div>
+        </header>
+
+        <div class="u-nav">
+            <a href="{{ url_for('main.user_space', uid=user.id) }}" class="home">
+                <span class="glyphicon glyphicon-home"></span>
+                <span>主页</span>
+            </a>
+            <a href="{{ url_for('main.user_space', uid=user.id, div='upload') }}" class="up">
+                <span class="glyphicon glyphicon-expand"></span>
+                <span>投稿</span>
+            </a>
+            <a href="{{ url_for('main.user_space', uid=user.id, div='collect') }}" class="coll">
+                <span class="glyphicon glyphicon-star"></span>
+                <span>收藏</span>
+            </a>
+            <span>
+                <span class="glyphicon glyphicon-time"></span>
+                <span class="u-seen">{{ user.last_seen }}</span>
+            </span>
+            <span>
+                <span class="glyphicon glyphicon-gift"></span>
+                <span class="u-id">{{ user.member_since|string|truncate(length=10, end="", leeway=0) }}</span>
+            </span>
+            <span>
+                <span class="label">UID</span>
+                <span class="u-id">{{ user.id }}</span>
+            </span>
+        </div>
+
+        <div class="u-shows">
+            {% for div, video in videos.items() %}
+            <div class="u-videos {{ div }}">
+                <h3  class="div">
+                    {% if user.id == current_user.id %}{{ ['我的收藏','我的视频'][div=='upload'] }}
+                    {% else %}{{ ['TA的收藏','TA的视频'][div=='collect'] }}{% endif %}
+                </h3>
+                <div class="storey-box">
+                    {% for v in video %}
+                    <div class="spread-module">
+                        <a href="{{ url_for('video.play', av=v.id) }}" target="_blank">
+                            <div class="lazy-img"><img src="../../static/video_faces/{{ v.face }}" alt="{{ v.title }}"/></div>
+                            <div class="title">{{ v.title }}</div>
+                        </a>
+                        <p class="info">
+                            <span class="like">
+                                <span class="glyphicon glyphicon-thumbs-up"></span>
+                                {{ macros.v_trunc(v.like) }}
+                            </span>
+                            <span class="date">
+                                <span class="glyphicon glyphicon-time"></span>
+                                {{ v.date|string|truncate(length=10, end="", leeway=0) }}
+                            </span>
+                        </p>
+                    </div>
+                    {% endfor %}
+                    <div style="clear: both"></div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if v_div %}  {# 说明是投稿/收藏展示页，需要分页按钮 #}
+        <div class="pagination">
+            {{ macros.pagination_widget(pagination, 'main.user_space', uid=user.id, div=v_div) }}
+        </div>
+        {% endif %}
+    </div>
+    {{ super() }}
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script type="text/javascript" src="../../static/js/main.js"></script>
+{% endblock scripts %}

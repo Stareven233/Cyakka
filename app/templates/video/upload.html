@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}视频投稿 - {{ current_user.username }} - Cyakka{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="../../static/css/video.css">
+{% endblock %}
+
+{% block content %}
+    <div class="upload-box">
+        <h1>Upload-Video</h1>
+        <div class="upload-form">{{ wtf.quick_form(form) }}</div>
+    </div>
+    {{ super() }}
+{% endblock %}
+
+
+{% block scripts %}
+    {{ super() }}
+    <script type="text/javascript" src="../../static/js/video.js"></script>
+{% endblock scripts %}

@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}搜索 - Cyakka{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="../../static/css/main.css">
+{% endblock %}
+
+{% block content %}
+    <div id="server-search">
+        <form class="search-form">
+            <header>
+                {{ form.keyword(id="search-input", autocomplete="off", maxlength="50", accesskey="s") }}
+                <span class="label label-primary"><span class="glyphicon glyphicon-search"></span>搜索</span>
+            </header>
+
+            <nav class="search-nav">
+                {{ form.type(class="filter-type nav") }}
+            </nav>
+
+            {% if videos %}
+                <div class="search-filter">
+                    {{ form.order(class="filter-type order") }}
+                    {{ form.div(class="filter-type divs") }}
+                </div>
+            {% elif users %}
+                <div class="search-filter">
+                    {{ form.anchor(class="filter-type anchor") }}
+                </div>
+            {% endif %}
+        </form>
+
+        <ul class="search-history"></ul>
+
+        {% if videos and videos != 'nil' %}
+            {% include "_videolist.html" %}
+        {% elif users and users != 'nil' %}
+            <ul class="user-list">
+                {% for user in users %}
+                <li>
+                    <div class="left"><a href="{{ url_for('main.user_space', uid=user.id)}}">
+                    {% if user.avatar %}
+                        <img class="img-circle" src="../../static/avatars/{{ user.avatar }}" alt="{{ user.nickname }}">
+                    {% else %}
+                        <img class="img-circle" src="../../static/avatars/default.jpg" alt="{{ user.nickname }}">
+                    {% endif %}
+                    </a></div>
+
+                    <div class="right">
+                        <div class="u-info">
+                            <a href="{{ url_for('main.user_space', uid=user.id)}}" target="_blank">{{ user.nickname }}</a>
+                            {% if user.can(Permission.ADMIN) %} <span class="label label-danger">管理</span>
+                            {% elif user.can(Permission.AUDIT) %} <span class="label label-warning">审核</span>
+                            {% elif user.can(Permission.VIP) %} <span class="label label-primary">大会员</span>
+                            {% elif not user.permissions %} <span class="label label-default">封禁中</span>
+                            {% elif user.can(Permission.LOGIN) and user.can(Permission.COMMENT) %} <span class="label label-info">会员</span>
+                            {% elif not user.can(Permission.COMMENT) %} <span class="label label-success">禁言中</span>
+                            {% endif %}
+                        </div>
+                        <div class="desc">{{ user.about_me }}</div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        {% else  %}
+            <p class="no-found">未找到</p>
+        {% endif %}
+
+        {% if pagination %}
+            <div class="pagination">
+                {{ macros.pagination_widget(pagination, 'video.classify', {"v_type": v_type}) }}
+            </div>
+        {% endif %}
+    </div>
+
+    {{ super() }}
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script type="text/javascript" src="../../static/js/main.js"></script>
+{% endblock scripts %}
