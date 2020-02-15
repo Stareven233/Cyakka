@@ -1,5 +1,9 @@
 # Cyakka
 - - -
+首页预览
+![Cyakka 首页预览](https://cdn.img.wenhairu.com/images/2020/02/15/muwnq.png)  
+(https://cdn.img.wenhairu.com/images/2020/02/15/muwnq.png)
+- - -
 环境：Virtualenv(Python3.7)  
 数据库：Mysql+Redis  
 部署：Tornado+Nginx  
