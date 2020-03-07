@@ -6,7 +6,7 @@ if(username){
 
 // 上传头像 upload_avatar.html
 $(document).ready(function () {
-    if (url.pathname !== '/edit/avatar')
+    if(url.pathname !== '/edit/avatar')
         return false;
 
     let up_avatar = document.getElementById('avatar');
@@ -21,7 +21,8 @@ $(document).ready(function () {
         submit_btn.removeAttr('disabled');
     }
     //up_avatar.addEventListener('change', () => fileLimit(this)); 不可，此处this为Window
-    up_avatar.setAttribute("onchange", "check_file(this)");
+    // up_avatar.setAttribute("onchange", "check_file(this)");   //之前明明可以的...
+    up_avatar.addEventListener('change', () => check_file(up_avatar));
     submit_btn.attr('disabled', '');
 });
 
@@ -38,7 +39,7 @@ $(document).ready(function () {
 async function audit_video(row, status)
 {
     let form = new FormData();
-    form.set('av', row.firstElementChild.innerHTML);
+    form.set('av', row.dataset.av);
     form.set('status', status);
     let response = await fetch(`${url.origin}/back/audit-video`, {
         method: 'POST',
@@ -49,10 +50,10 @@ async function audit_video(row, status)
         row.remove()
 }
 
-let up_items = document.querySelectorAll('#back-body .up-info');
+let up_items = document.querySelectorAll('#back-body .vd-list>li');
 for(let up of up_items) {
-    up.lastElementChild.firstElementChild.addEventListener('click', () => audit_video(up, '1'));
-    up.lastElementChild.lastElementChild.addEventListener('click', () => audit_video(up, '2'));
+    up.lastElementChild.lastElementChild.addEventListener('click', () => audit_video(up, '1'));
+    up.lastElementChild.firstElementChild.addEventListener('click', () => audit_video(up, '2'));
     //对应行末审核栏的ok与not
 }
 

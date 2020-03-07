@@ -33,7 +33,7 @@ def upload():
         db.session.add_all([new_video, log])
         db.session.commit()
 
-        return redirect(url_for('video.manager'))
+        return redirect(url_for('video.manage'))
     return render_template('video/upload.html', form=form)
 
 

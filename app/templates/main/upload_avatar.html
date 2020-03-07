@@ -19,6 +19,7 @@
                     <span>选择图片</span>
                 </label>
 
+                {{ form.hidden_tag() }}  <!-- 自动生成csrf_token验证 -->
                 <div class="border-line"></div>
 
                 <div class="avatar-now">
