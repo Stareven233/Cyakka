@@ -165,7 +165,7 @@ def tip_comment():
 @login_required
 @permission_required(Permission.COMMENT)
 def alter_statistic(action):
-    if action not in ['like', 'collect']:
+    if action not in ['like', 'collect', 'coin']:
         return 'action type error'
     light_on = eval(request.form[action].capitalize())  # 当前是否点亮
     av = request.form['av']
@@ -190,6 +190,12 @@ def alter_statistic(action):
     elif action == 'collect' and not light_on:
         bideo.collect += 1
         current_user.v_collect.append(bideo)
+    if action == 'coin' and not light_on and current_user.coins >= 1:
+        current_user.coins -= 1
+        bideo.coin += 1
+        current_user.v_coin.append(bideo)
+    elif action == 'coin':
+        return 'no refunds or coins run out'
 
     db.session.add_all([bideo, current_user._get_current_object()])
     db.session.commit()
