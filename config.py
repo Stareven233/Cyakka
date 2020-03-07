@@ -19,4 +19,4 @@ class Config(object):
     JSON_AS_ASCII = False
     REDIS_URL = {'host': 'localhost', 'port': 6379, 'password': getenv('DATABASE_PW')}
 
-# Mysql mysql://username:password@hostname/database 默认用mysqldb，导致No module named 'MySQLdb'
+# Mysql mysql://username:password@hostname/database 默认用mysqldb，导致No module named 'MySQLdb' 
