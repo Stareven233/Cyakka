@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}我的投稿 - Cyakka{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="../static/css/video.css">
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="vd-list"><ul>
+            {% for v in videos %}
+            <li data-av="{{ v.id }}" data-div="{{ v.type }}">
+                <div class="left"><a href="{{ url_for('video.play', av=v.id) }}">
+                    <img src="../../static/video_faces/{{ v.face }}" alt="{{ v.title }}"/>
+                </a></div>
+                <div class="right">
+                    <a href="{{ url_for('video.play', av=v.id) }}" target="_blank" class="title">{{ v.title }}</a>
+                    <div class="up-info">
+                        <span href="" class="v-status stat-{{ v.status }}">
+{#                            {% if v.status==0 %}待审核{% elif v.status==1 %}通过{% elif v.status==2 %}违规{% endif %}#}
+                            {{ macros.video_status(v.status) }}
+                        </span>
+                        <span class="v-date">{{ v.date }}</span>
+                    </div>
+                    <div class="v-desc">{{ v.desc }}</div>
+                    <div class="v-stat">
+                        <span title="点赞数" class="like">
+                            <span class="glyphicon glyphicon-thumbs-up"></span>
+                            <span class="statistic">{{ macros.v_trunc(v.like) }}</span>
+                        </span>
+                        <span title="硬币数" class="coin">
+                            <span class="glyphicon glyphicon-copyright-mark"></span>
+                            <span class="statistic">{{ macros.v_trunc(v.coin) }}</span>
+                        </span>
+                        <span title="收藏数" class="collect">
+                            <span class="glyphicon glyphicon-star"></span>
+                            <span class="statistic">{{ macros.v_trunc(v.collect) }}</span>
+                        </span>
+                    </div>
+                    <div class="v-edit">
+                        <button class="btn btn-default" data-toggle="modal" data-target="#edit-modal">编辑</button>
+                        <button class="btn btn-danger">删除</button>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul></div>
+
+        <div id="edit-modal" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times</button>
+                        <h4 class="modal-title">编辑稿件</h4>
+                    </div>
+                    <div class="modal-body">
+{#                        <label><span>标题</span><input type="text" class="v-title"></label>#}
+{#                        <label><span>封面</span><input type="file" class="v-face"></label>#}
+{#                        <label><span>简介</span><input type="text" class="v-desc"></label>#}
+                        {{ wtf.quick_form(form) }}
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary">保存</button>
+                        <button class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+{#        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#edit-modal">#}
+{#            Launch demo modal#}
+{#        </button>#}
+
+        <div class="pagination">
+            {{ macros.pagination_widget(pagination, 'video.manage') }}
+        </div>
+    </div>
+    {{ super() }}
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script type="text/javascript" src="../../static/js/video.js"></script>
+{%- endblock scripts %}
