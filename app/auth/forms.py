@@ -12,6 +12,21 @@ class LoginForm(FlaskForm):
     remember_me = BooleanField('记住我')
     submit = SubmitField('登录')
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = None
+
+    def validate_username(self, field):  # 将随着同名字段验证时一起被调用
+        self.user = User.query.filter_by(username=field.data).first()
+        if not self.user:
+            raise ValidationError('用户名不存在')
+
+    def validate_password(self, field):
+        if not self.user:
+            return None
+        if not self.user.verify_password(field.data):
+            raise ValidationError('密码错误')
+
 
 class RegistrationForm(FlaskForm):
     username = StringField('用户名', validators=[DataRequired(), Length(2, 20), Regexp(

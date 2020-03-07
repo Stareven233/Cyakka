@@ -10,22 +10,20 @@ from flask_login import login_user, logout_user, login_required, current_user
 def login():  # 见8.4.5
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
-        if user is not None and user.verify_password(form.password.data):
-            if not user.permissions:  # 被封号的不许登录
-                flash('啊？你被封号了！')
-                return redirect(url_for('auth.login'))
+        user = form.user
+        if not user.permissions:  # 被封号的不许登录
+            flash('啊？你被封号了！')
+            return url_for('auth.login')
 
-            login_user(user, form.remember_me.data)  # 8.4.5写入cookie以记住账号
-            log = Log(uid=user.id, op=1, detail=request.form.get('ip', 'null'))
-            db.session.add(log)
-            db.session.commit()
+        login_user(user, form.remember_me.data)  # 8.4.5写入cookie以记住账号
+        log = Log(uid=user.id, op=1, detail=request.form.get('ip', 'null'))
+        db.session.add(log)
+        db.session.commit()
 
-            pre_url = request.args.get('next')  # 因login_required而被跳转的url
-            if pre_url is None or not pre_url.startswith('/'):
-                pre_url = url_for('main.index')
-            return pre_url
-        flash('用户不存在或密码错误')
+        pre_url = request.args.get('next')  # 因login_required而被跳转的url
+        if pre_url is None or not pre_url.startswith('/'):
+            pre_url = url_for('main.index')
+        return pre_url
     return render_template('auth/login.html', form=form)
 
 
@@ -53,6 +51,6 @@ def logout():
 
 
 @auth.before_app_request
-def fresh_last_seen():  # 每次请求前都刷新最后访问时间
+def fresh_last_seen():  # 每次请求后都刷新最后访问时间
     if current_user.is_authenticated:
         current_user.ping()
