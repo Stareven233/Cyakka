@@ -12,7 +12,7 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://root:{getenv("DATABASE_PW")}@localhost:3306/cyakka'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     UPLOADED_FILES_DEST = dirname(__file__)+sep+'app'+sep+'static'+sep
-    MAX_CONTENT_LENGTH = 1024 * 1024  # * 1024
+    MAX_CONTENT_LENGTH = 1024 * 1024 * 1024
     CYAKKA_VIDEO_TYPES = video_types
     CYAKKA_VIDEO_PER_PAGE = 10
     CYAKKA_COMM_PER_PAGE = 6
