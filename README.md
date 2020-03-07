@@ -9,7 +9,7 @@
 大致实现了登录注册、搜索、点赞收藏、弹幕、视频审核、评论、后台管理等
 - - -
 Usage
-* 配置config.py
+* 按config.py配置环境变量、数据库
 * 执行pip install -r requirements.txt
 * 运行Cyakka.py下的create_db_table
 * 运行Cyakka.py的app.run()直接启动
