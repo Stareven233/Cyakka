@@ -16,4 +16,5 @@ Usage
 * 或开启Nginx并运行tornado_server.py部署到nginx上
 - - -
 备注
-- DPlayer.min.js删去了弹幕接口路径尾部的/v3
+- DPlayer.min.js删去了弹幕接口路径尾部的/v3 
+- - -
