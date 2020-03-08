@@ -101,6 +101,7 @@ class User(UserMixin, db.Model):
     v_collect = db.relationship('Video', secondary=v_collects, backref='collected', lazy='dynamic')
     permissions = Column(Integer, default=3)
     danmaku = db.relationship('Danmaku', backref='author', lazy='dynamic')
+    coins = db.Column(Integer, default=0)
     # 不存在/封禁0, 普通会员(关注1 弹幕,评论2..)3, 大会员(还没想好4), 审核(稿件,评论8), 管理员(用户密码邮件更改,封号16)
 
     def __init__(self, **kwargs):  # 原理不明...
@@ -112,7 +113,10 @@ class User(UserMixin, db.Model):
         return False
 
     def ping(self):  # 刷新用户最后访问时间
-        self.last_seen = datetime.now()
+        now = datetime.now()
+        if now.day != self.last_seen.day or (now - self.last_seen).days > 0:
+            self.coins += 1
+        self.last_seen = now
         db.session.add(self)
         db.session.commit()
 
